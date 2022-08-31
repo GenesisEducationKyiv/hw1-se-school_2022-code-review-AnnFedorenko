@@ -4,17 +4,16 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"rate-api/config"
 )
 
 type Rate struct {
 	Price string
 }
 
-const BinanceURL = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUAH"
-
 func GetRateFromBinance() (Rate, error) {
 	var newRate Rate
-	resp, err := http.Get(BinanceURL)
+	resp, err := http.Get(config.Cfg.BtcURL)
 	if err != nil {
 		return newRate, err
 	}

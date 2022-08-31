@@ -11,6 +11,7 @@ linters:
     - deadcode
     - exhaustivestruct
     - exhaustruct
+    - gochecknoglobals
     - gofmt
     - gofumpt
     - gci

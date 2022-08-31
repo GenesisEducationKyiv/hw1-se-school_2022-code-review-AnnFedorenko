@@ -2,8 +2,10 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
+	"rate-api/config"
 	"rate-api/service"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +17,7 @@ func getRate(context *gin.Context) {
 		http.Error(context.Writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if err == nil {
 	context.IndentedJSON(http.StatusOK, rate.Price)
 }
 
@@ -52,9 +55,12 @@ func sendEmails(context *gin.Context) {
 }
 
 func main() {
+	config.LoadConfig()
+	serverAddr := fmt.Sprintf("%s:%s", config.Cfg.ServerHost, config.Cfg.ServerPort)
+
 	router := gin.Default()
 	router.GET("/rate", getRate)
 	router.POST("/subscribe", subscribe)
 	router.POST("/sendEmails", sendEmails)
-	log.Fatal(router.Run("0.0.0.0:8080"))
+	log.Fatal(router.Run(serverAddr))
 }

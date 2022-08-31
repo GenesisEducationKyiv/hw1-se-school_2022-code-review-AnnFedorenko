@@ -2,11 +2,10 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"net/mail"
 	"net/smtp"
-	"os"
-
-	"github.com/joho/godotenv"
+	"rate-api/config"
 )
 
 const FileName = "subscribers.txt"
@@ -56,13 +55,11 @@ func isEmailValid(address string) bool {
 }
 
 func SendEmails() error {
-	if err := godotenv.Load(); err != nil {
-		return err
-	}
-	user := os.Getenv("EMAIL_ADDRESS")
-	password := os.Getenv("EMAIL_PASSWORD")
-	addr := "smtp.gmail.com:587"
-	host := "smtp.gmail.com"
+	var cfg = config.Cfg
+	user := cfg.SMTPUsername
+	password := cfg.SMTPPassword
+	addr := fmt.Sprintf("%s:%d", cfg.SMTPHost, cfg.SMTPPort)
+	host := cfg.SMTPHost
 	sender := "BTC rate app"
 
 	receiver := readFileToArray(FileName)
