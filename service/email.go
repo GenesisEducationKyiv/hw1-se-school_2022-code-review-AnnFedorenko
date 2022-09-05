@@ -8,8 +8,6 @@ import (
 	"rate-api/config"
 )
 
-const FileName = "subscribers.txt"
-
 var ErrEmailSubscribed = errors.New("Email already subscribed")
 var ErrEmailNotValid = errors.New("Email address is not valid")
 
@@ -30,11 +28,11 @@ func AddEmail(newEmail Email) error {
 		return ErrEmailSubscribed
 	}
 
-	return appendToFile(newEmail.Address, FileName)
+	return appendToFile(newEmail.Address, config.Cfg.EmailStorage)
 }
 
 func isEmailSubscribed(address string) (bool, error) {
-	isFileExist, err := isFileExist(FileName)
+	isFileExist, err := isFileExist(config.Cfg.EmailStorage)
 	if err != nil {
 		return false, err
 	}
@@ -42,7 +40,7 @@ func isEmailSubscribed(address string) (bool, error) {
 		return isFileExist, nil
 	}
 
-	isEmailExist, err := isStringExist(address, FileName)
+	isEmailExist, err := isStringExist(address, config.Cfg.EmailStorage)
 	if err != nil {
 		return isEmailExist, err
 	}
@@ -62,7 +60,7 @@ func SendEmails() error {
 	host := cfg.SMTPHost
 	sender := "BTC rate app"
 
-	receiver := readFileToArray(FileName)
+	receiver := readFileToArray(config.Cfg.EmailStorage)
 	if receiver == nil {
 		return nil
 	}

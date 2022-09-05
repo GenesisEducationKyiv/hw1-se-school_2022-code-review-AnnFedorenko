@@ -17,7 +17,6 @@ func getRate(context *gin.Context) {
 		http.Error(context.Writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err == nil {
 	context.IndentedJSON(http.StatusOK, rate.Price)
 }
 

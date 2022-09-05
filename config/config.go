@@ -1,11 +1,17 @@
 package config
 
 import (
+	"flag"
+	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/caarlos0/env"
 	"github.com/joho/godotenv"
 )
+
+const ProjectName = "hw1-se-school_2022-code-review-AnnFedorenko"
 
 type config struct {
 	SMTPHost     string `env:"SMTP_HOST"        envDefault:"smtp.gmail.com1"`
@@ -15,19 +21,28 @@ type config struct {
 	ServerHost   string `env:"SERVER_HOST"      envDefault:"localhost"`
 	ServerPort   string `env:"SERVER_PORT"      envDefault:"8080"`
 	BtcURL       string `env:"BTC_URL"`
+	EmailStorage string `env:"EMAIL_STORAGE"`
 }
 
 var Cfg config
 
 func LoadConfig() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("unable to load .env file: %e", err)
+	if flag.Lookup("test.v") == nil {
+		err := godotenv.Load(".env")
+		if err != nil {
+			log.Fatalf("Error loading .env file")
+		}
+	} else {
+		path, _ := os.Getwd()
+		err := godotenv.Load(strings.Split(path, ProjectName)[0] + fmt.Sprintf("%s/", ProjectName) + ".env.test")
+		if err != nil {
+			log.Fatalf("Error loading .env.test file")
+		}
 	}
 
 	Cfg = config{}
 
-	err = env.Parse(&Cfg)
+	err := env.Parse(&Cfg)
 	if err != nil {
 		log.Fatalf("unable to parse ennvironment variables: %e", err)
 	}

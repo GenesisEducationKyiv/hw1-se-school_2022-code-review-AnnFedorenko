@@ -2,10 +2,13 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"rate-api/config"
 )
+
+var ErrRateFieldMissed = errors.New("Rate field is missing")
 
 type Rate struct {
 	Price string
@@ -25,6 +28,10 @@ func GetRateFromBinance() (Rate, error) {
 
 	if err := json.Unmarshal(body, &newRate); err != nil {
 		return newRate, err
+	}
+
+	if newRate.Price == "" {
+		return newRate, ErrRateFieldMissed
 	}
 
 	return newRate, nil
