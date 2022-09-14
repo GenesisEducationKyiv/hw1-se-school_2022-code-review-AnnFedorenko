@@ -3,7 +3,7 @@ Golang API that works with bitcoin rate from [Binance API]("https://api.binance.
 
 ### Running with Docker 
 1. Clone repository
-2. Create ```.env``` file in the root folder and create EMAIL_ADDRESS and EMAIL_PASSWORD variables with email address data that will be used for service work file.
+2. Create ```.env``` file in the root folder and create EMAIL_ADDRESS and EMAIL_PASSWORD variables with email address data that will be used for service work file. For tests add ```.env.test``` file.
     >For email accounts with **two-factor authentication**:
     >-[generate](https://support.google.com/mail/answer/185833?hl=en) application password
     > -set EMAIL_PASSWORD value to application password 

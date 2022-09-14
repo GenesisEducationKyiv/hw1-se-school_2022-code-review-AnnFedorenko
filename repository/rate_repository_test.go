@@ -1,17 +1,19 @@
-package service_test
+package repository_test
 
 import (
 	"net/http"
 	"rate-api/config"
-	"rate-api/service"
+	"rate-api/repository"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetRateFromBinance(t *testing.T) {
+func TestGetRate(t *testing.T) {
 	config.LoadConfig()
+	repo := repository.NewRateRepository()
+
 	expectedRate := "772755.00000000"
 
 	httpmock.Activate()
@@ -27,13 +29,14 @@ func TestGetRateFromBinance(t *testing.T) {
 		},
 	)
 
-	rate, _ := service.GetRateFromBinance()
+	rate, _ := repo.GetRate()
 
 	assert.Equal(t, expectedRate, rate.Price)
 }
 
-func TestGetRateFromBinanceMissing(t *testing.T) {
+func TestGetRateMissing(t *testing.T) {
 	config.LoadConfig()
+	repo := repository.NewRateRepository()
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -46,25 +49,27 @@ func TestGetRateFromBinanceMissing(t *testing.T) {
 		},
 	)
 
-	_, err := service.GetRateFromBinance()
+	_, err := repo.GetRate()
 
 	assert.Error(t, err)
-	assert.ErrorIs(t, err, service.ErrRateFieldMissed)
+	assert.ErrorIs(t, err, repository.ErrRateFieldMissed)
 }
 
-func TestGetRateFromBinanceIntegration(t *testing.T) {
+func TestGetRateIntegration(t *testing.T) {
 	config.LoadConfig()
+	repo := repository.NewRateRepository()
 
-	rate, err := service.GetRateFromBinance()
+	rate, err := repo.GetRate()
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, rate.Price)
 }
 
-func TestGetRateFromBinanceFailedIntegration(t *testing.T) {
+func TestGetRateFailedIntegration(t *testing.T) {
 	config.Cfg.BtcURL = "https://dummy"
+	repo := repository.NewRateRepository()
 
-	_, err := service.GetRateFromBinance()
+	_, err := repo.GetRate()
 
 	assert.Error(t, err)
 }

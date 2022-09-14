@@ -1,4 +1,4 @@
-package service
+package repository
 
 import (
 	"encoding/json"
@@ -6,16 +6,22 @@ import (
 	"io"
 	"net/http"
 	"rate-api/config"
+	"rate-api/model"
 )
 
-var ErrRateFieldMissed = errors.New("Rate field is missing")
+var ErrRateFieldMissed = errors.New("rate field is missing")
 
-type Rate struct {
-	Price string
+type (
+	BinanceRateRepository struct {
+	}
+)
+
+func NewRateRepository() *BinanceRateRepository {
+	return &BinanceRateRepository{}
 }
 
-func GetRateFromBinance() (Rate, error) {
-	var newRate Rate
+func (r *BinanceRateRepository) GetRate() (model.Rate, error) {
+	var newRate model.Rate
 	resp, err := http.Get(config.Cfg.BtcURL)
 	if err != nil {
 		return newRate, err
