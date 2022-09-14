@@ -1,26 +1,29 @@
 package service
 
 import (
-	"errors"
 	"net/mail"
+	"rate-api/mailerror"
 	"rate-api/model"
-	"rate-api/repository"
+	"rate-api/router"
 )
 
-var ErrEmailSubscribed = errors.New("email already subscribed")
-var ErrEmailNotValid = errors.New("email address is not valid")
-
 type EmailService struct {
-	repo repository.EmailRepository
+	repo EmailRepositoryInterface
 }
 
-func NewEmailService(repo repository.EmailRepository) *EmailService {
+type EmailRepositoryInterface interface {
+	IsExist(email model.Email) (bool, error)
+	Add(email model.Email) error
+	GetAllEmails() []string
+}
+
+func NewEmailService(repo EmailRepositoryInterface) router.EmailServiceInterface {
 	return &EmailService{repo: repo}
 }
 
 func (s *EmailService) AddEmail(newEmail model.Email) error {
 	if !isEmailValid(newEmail.Address) {
-		return ErrEmailNotValid
+		return mailerror.ErrEmailNotValid
 	}
 
 	isEmailSubscribed, err := s.repo.IsExist(newEmail)
@@ -29,10 +32,14 @@ func (s *EmailService) AddEmail(newEmail model.Email) error {
 	}
 
 	if isEmailSubscribed {
-		return ErrEmailSubscribed
+		return mailerror.ErrEmailSubscribed
 	}
 
 	return s.repo.Add(newEmail)
+}
+
+func (s *EmailService) GetAllEmails() []string {
+	return s.repo.GetAllEmails()
 }
 
 func isEmailValid(address string) bool {

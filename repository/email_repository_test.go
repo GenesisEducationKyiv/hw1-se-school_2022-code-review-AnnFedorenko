@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAddEmail(t *testing.T) {
+func TestAddEmailIntegration(t *testing.T) {
 	config.LoadConfig()
 	email := model.Email{Address: config.Cfg.SMTPUsername}
 	repo := repository.NewEmailRepository(config.Cfg.EmailStorage)
@@ -27,7 +27,7 @@ func TestAddEmail(t *testing.T) {
 	t.Cleanup(func() { deleteTestFile() })
 }
 
-func TestIsExistTrue(t *testing.T) {
+func TestIsExistTrueIntegration(t *testing.T) {
 	config.LoadConfig()
 	email := model.Email{Address: config.Cfg.SMTPUsername}
 	repo := repository.NewEmailRepository(config.Cfg.EmailStorage)
@@ -42,7 +42,7 @@ func TestIsExistTrue(t *testing.T) {
 	t.Cleanup(func() { deleteTestFile() })
 }
 
-func TestIsExistFalse(t *testing.T) {
+func TestIsExistFalseIntegration(t *testing.T) {
 	config.LoadConfig()
 	email := model.Email{Address: config.Cfg.SMTPUsername}
 	repo := repository.NewEmailRepository(config.Cfg.EmailStorage)
@@ -57,7 +57,7 @@ func TestIsExistFalse(t *testing.T) {
 	t.Cleanup(func() { deleteTestFile() })
 }
 
-func TestIsExistFileNotExist(t *testing.T) {
+func TestIsExistFileNotExistIntegration(t *testing.T) {
 	config.LoadConfig()
 	email := model.Email{Address: config.Cfg.SMTPUsername}
 	repo := repository.NewEmailRepository(config.Cfg.EmailStorage)
@@ -70,7 +70,7 @@ func TestIsExistFileNotExist(t *testing.T) {
 	assert.False(t, isExist)
 }
 
-func TestGetAllUsers(t *testing.T) {
+func TestGetAllUsersIntegration(t *testing.T) {
 	config.LoadConfig()
 	email := model.Email{Address: config.Cfg.SMTPUsername}
 	repo := repository.NewEmailRepository(config.Cfg.EmailStorage)

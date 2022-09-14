@@ -5,7 +5,7 @@ import (
 )
 
 func (h *Handler) RegisterRouter(router *gin.Engine) {
-	router.GET("/rate", h.getRate)
-	router.POST("/subscribe", h.subscribe)
-	router.POST("/sendEmails", h.sendEmails)
+	router.GET("/rate", h.rateHandler.getRate)
+	router.POST("/subscribe", h.emailHandler.subscribe)
+	router.POST("/sendEmails", h.emailSendHandler.sendEmails)
 }

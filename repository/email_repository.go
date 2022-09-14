@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"rate-api/model"
+	"rate-api/service"
 )
 
 type (
@@ -15,7 +16,7 @@ type (
 
 const fileMode = 0600
 
-func NewEmailRepository(filePath string) *EmailRepository {
+func NewEmailRepository(filePath string) service.EmailRepositoryInterface {
 	return &EmailRepository{filePath: filePath}
 }
 

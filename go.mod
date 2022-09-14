@@ -8,11 +8,14 @@ require (
 	github.com/codingconcepts/env v0.0.0-20200821220118-a8fbf8d84482
 	github.com/joho/godotenv v1.4.0
 	github.com/sethvargo/go-envconfig v0.8.2
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.0
 	github.com/tomazk/envcfg v0.0.0-20170619155318-23e3618f1e33
 )
 
-require golang.org/x/tools v0.1.12 // indirect
+require (
+	github.com/stretchr/objx v0.4.0 // indirect
+	golang.org/x/tools v0.1.12 // indirect
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -38,5 +41,5 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

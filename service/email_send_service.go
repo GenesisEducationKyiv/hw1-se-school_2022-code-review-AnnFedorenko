@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"net/smtp"
 	"rate-api/config"
-	"rate-api/repository"
+	"rate-api/router"
 )
 
 type EmailSendService struct {
-	repo repository.EmailRepository
-	rs   RateService
+	es router.EmailServiceInterface
+	rs router.RateServiceInterface
 }
 
-func NewEmailSendService(repo repository.EmailRepository, rs RateService) *EmailSendService {
-	return &EmailSendService{repo: repo,
-		rs: rs}
+func NewEmailSendService(es router.EmailServiceInterface,
+	rs router.RateServiceInterface) router.EmailSendServiceInterface {
+	return &EmailSendService{es, rs}
 }
 
 func (s *EmailSendService) SendEmails() error {
@@ -25,7 +25,7 @@ func (s *EmailSendService) SendEmails() error {
 	host := cfg.SMTPHost
 	sender := "BTC rate app"
 
-	receiver := s.repo.GetAllEmails()
+	receiver := s.es.GetAllEmails()
 	if receiver == nil {
 		return nil
 	}

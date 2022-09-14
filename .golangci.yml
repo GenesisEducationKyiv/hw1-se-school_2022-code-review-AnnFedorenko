@@ -18,6 +18,7 @@ linters:
     - golint
     - ifshort
     - interfacer
+    - ireturn
     - maligned
     - nlreturn
     - noctx

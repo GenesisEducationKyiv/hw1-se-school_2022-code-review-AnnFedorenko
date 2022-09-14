@@ -1,9 +1,9 @@
-package repository_test
+package service_test
 
 import (
 	"net/http"
 	"rate-api/config"
-	"rate-api/repository"
+	"rate-api/service"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -12,7 +12,7 @@ import (
 
 func TestGetRate(t *testing.T) {
 	config.LoadConfig()
-	repo := repository.NewRateRepository()
+	rateServ := service.NewRateService()
 
 	expectedRate := "772755.00000000"
 
@@ -29,14 +29,14 @@ func TestGetRate(t *testing.T) {
 		},
 	)
 
-	rate, _ := repo.GetRate()
+	rate, _ := rateServ.GetRate()
 
 	assert.Equal(t, expectedRate, rate.Price)
 }
 
 func TestGetRateMissing(t *testing.T) {
 	config.LoadConfig()
-	repo := repository.NewRateRepository()
+	rateServ := service.NewRateService()
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -49,17 +49,17 @@ func TestGetRateMissing(t *testing.T) {
 		},
 	)
 
-	_, err := repo.GetRate()
+	_, err := rateServ.GetRate()
 
 	assert.Error(t, err)
-	assert.ErrorIs(t, err, repository.ErrRateFieldMissed)
+	assert.ErrorIs(t, err, service.ErrRateFieldMissed)
 }
 
 func TestGetRateIntegration(t *testing.T) {
 	config.LoadConfig()
-	repo := repository.NewRateRepository()
+	rateServ := service.NewRateService()
 
-	rate, err := repo.GetRate()
+	rate, err := rateServ.GetRate()
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, rate.Price)
@@ -67,9 +67,9 @@ func TestGetRateIntegration(t *testing.T) {
 
 func TestGetRateFailedIntegration(t *testing.T) {
 	config.Cfg.BtcURL = "https://dummy"
-	repo := repository.NewRateRepository()
+	rateServ := service.NewRateService()
 
-	_, err := repo.GetRate()
+	_, err := rateServ.GetRate()
 
 	assert.Error(t, err)
 }

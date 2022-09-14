@@ -7,15 +7,20 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
+
+type EmailSendRepositoryMock struct {
+	mock.Mock
+}
 
 func TestSendEmailsSuccessIntegration(t *testing.T) {
 	config.LoadConfig()
-	emailRepo := repository.NewEmailRepository(config.Cfg.EmailStorage)
-	rateRepo := repository.NewRateRepository()
-	rateServ := service.NewRateService(*rateRepo)
-	emailSendServ := service.NewEmailSendService(*emailRepo, *rateServ)
+	emailServ := service.NewEmailService(repository.NewEmailRepository(config.Cfg.EmailStorage))
+	rateServ := service.NewRateService()
+	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 	initTestFile()
+
 	err := emailSendServ.SendEmails()
 
 	assert.NoError(t, err)
@@ -24,11 +29,9 @@ func TestSendEmailsSuccessIntegration(t *testing.T) {
 
 func TestSendEmailsFailIntegration(t *testing.T) {
 	config.LoadConfig()
-	config.LoadConfig()
-	emailRepo := repository.NewEmailRepository(config.Cfg.EmailStorage)
-	rateRepo := repository.NewRateRepository()
-	rateServ := service.NewRateService(*rateRepo)
-	emailSendServ := service.NewEmailSendService(*emailRepo, *rateServ)
+	emailServ := service.NewEmailService(repository.NewEmailRepository(config.Cfg.EmailStorage))
+	rateServ := service.NewRateService()
+	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 	config.Cfg.SMTPHost = "dummy"
 	initTestFile()
 
