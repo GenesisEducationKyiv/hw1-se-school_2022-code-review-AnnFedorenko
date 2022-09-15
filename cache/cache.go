@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"rate-api/config"
 	"rate-api/model"
 	"rate-api/router"
 	"time"
@@ -16,7 +17,8 @@ type CacheRateService struct {
 }
 
 func NewCacheRateService(serv router.RateServiceInterface) router.RateServiceInterface {
-	c := cache.New(5*time.Minute, 10*time.Minute)
+	duration := time.Duration(config.Cfg.LogDuration) * time.Minute
+	c := cache.New(duration, duration+duration)
 	return &CacheRateService{c: *c,
 		serv: &serv}
 }
@@ -52,8 +54,8 @@ func (s *CacheRateService) getRate() model.Rate {
 		return rate
 	}
 
-	rate, ok = cache.(model.Rate)
-	if !ok {
+	rate, assertOk := cache.(model.Rate)
+	if !assertOk {
 		return rate
 	}
 

@@ -24,6 +24,7 @@ linters:
     - noctx
     - nosnakecase
     - paralleltest 
+    - revive
     - rowserrcheck
     - scopelint
     - sqlclosecheck

@@ -11,12 +11,12 @@ import (
 )
 
 var coingate = "coingate"
+var dummyURL = "https://dummy"
+var expectedRate = "772665.00000000"
 
 func TestGetCoingateRate(t *testing.T) {
 	config.LoadConfig()
 	rateServ := rate.GetRateService(coingate)
-
-	expectedRate := "772755.00000000"
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -61,7 +61,7 @@ func TestGetCoingateRateIntegration(t *testing.T) {
 }
 
 func TestGetCoingateRateFailedIntegration(t *testing.T) {
-	config.Cfg.CoingateURL = "https://dummy"
+	config.Cfg.CoingateURL = dummyURL
 	rateServ := rate.GetRateService(coingate)
 
 	_, err := rateServ.GetRate()

@@ -25,6 +25,7 @@ type config struct {
 	CoingateURL            string `env:"COINGATE_URL"`
 	EmailStorage           string `env:"EMAIL_STORAGE"`
 	CryploCurrencyProvider string `env:"CRYPTO_CURRENCY_PROVIDER"`
+	LogDuration            int    `env:"LOG_DURATION_MIN"`
 }
 
 var Cfg config

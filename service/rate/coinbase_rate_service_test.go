@@ -17,8 +17,6 @@ func TestGetCoinbaseRate(t *testing.T) {
 	config.LoadConfig()
 	rateServ := rate.GetRateService(coinbase)
 
-	expectedRate := "772755.00000000"
-
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -65,7 +63,7 @@ func TestGetCoinbaseRateIntegration(t *testing.T) {
 }
 
 func TestGetCoinbaseRateFailedIntegration(t *testing.T) {
-	config.Cfg.CoinbaseURL = "https://dummy"
+	config.Cfg.CoinbaseURL = dummyURL
 	rateServ := rate.GetRateService(coinbase)
 
 	_, err := rateServ.GetRate()

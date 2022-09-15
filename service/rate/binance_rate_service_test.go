@@ -16,12 +16,10 @@ func TestGetRate(t *testing.T) {
 	config.LoadConfig()
 	rateServ := rate.GetRateService(binance)
 
-	expectedRate := "772755.00000000"
-
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", config.Cfg.BtcURL,
+	httpmock.RegisterResponder("GET", config.Cfg.BinanceURL,
 		func(req *http.Request) (*http.Response, error) {
 			resp, err := httpmock.NewJsonResponse(200, map[string]interface{}{
 				"symbol": "BTCUAH",
@@ -42,7 +40,7 @@ func TestGetRateMissing(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", config.Cfg.BtcURL,
+	httpmock.RegisterResponder("GET", config.Cfg.BinanceURL,
 		func(req *http.Request) (*http.Response, error) {
 			resp, err := httpmock.NewJsonResponse(200, map[string]interface{}{
 				"symbol": "BTCUAH",
@@ -68,7 +66,7 @@ func TestGetRateIntegration(t *testing.T) {
 }
 
 func TestGetRateFailedIntegration(t *testing.T) {
-	config.Cfg.BtcURL = "https://dummy"
+	config.Cfg.BinanceURL = dummyURL
 	rateServ := rate.GetRateService(binance)
 
 	_, err := rateServ.GetRate()

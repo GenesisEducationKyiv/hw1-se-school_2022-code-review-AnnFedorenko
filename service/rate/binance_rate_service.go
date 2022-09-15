@@ -31,7 +31,7 @@ func (s *BinanceRateService) GetRate() (model.Rate, error) {
 
 func (s *BinanceRateService) getRate() (model.Rate, error) {
 	var newRate model.Rate
-	resp, err := http.Get(config.Cfg.BtcURL)
+	resp, err := http.Get(config.Cfg.BinanceURL)
 	if err != nil {
 		return newRate, err
 	}
