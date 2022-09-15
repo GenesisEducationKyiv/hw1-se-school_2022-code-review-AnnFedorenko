@@ -1,46 +1,46 @@
-package service_test
+package rate_test
 
 import (
+	"fmt"
 	"net/http"
 	"rate-api/config"
-	"rate-api/service"
+	"rate-api/service/rate"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetRate(t *testing.T) {
+var coinbase = "coinbase"
+
+func TestGetCoinbaseRate(t *testing.T) {
 	config.LoadConfig()
-	rateServ := service.NewRateService()
+	rateServ := rate.GetRateService(coinbase)
 
 	expectedRate := "772755.00000000"
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", config.Cfg.BtcURL,
+	httpmock.RegisterResponder("GET", config.Cfg.CoinbaseURL,
 		func(req *http.Request) (*http.Response, error) {
-			resp, err := httpmock.NewJsonResponse(200, map[string]interface{}{
-				"symbol": "BTCUAH",
-				"price":  expectedRate,
-			})
-			return resp, err
+			resp := httpmock.NewStringResponse(200,
+				fmt.Sprintf(`{"data":{"amount":"%s"}}`, expectedRate))
+			return resp, nil
 		},
 	)
 
 	rate, _ := rateServ.GetRate()
-
 	assert.Equal(t, expectedRate, rate.Price)
 }
 
-func TestGetRateMissing(t *testing.T) {
+func TestGetCoinbaseRateMissing(t *testing.T) {
 	config.LoadConfig()
-	rateServ := service.NewRateService()
+	rateServ := rate.GetRateService(coinbase)
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", config.Cfg.BtcURL,
+	httpmock.RegisterResponder("GET", config.Cfg.CoinbaseURL,
 		func(req *http.Request) (*http.Response, error) {
 			resp, err := httpmock.NewJsonResponse(200, map[string]interface{}{
 				"symbol": "BTCUAH",
@@ -50,14 +50,13 @@ func TestGetRateMissing(t *testing.T) {
 	)
 
 	_, err := rateServ.GetRate()
-
 	assert.Error(t, err)
-	assert.ErrorIs(t, err, service.ErrRateFieldMissed)
+	assert.ErrorIs(t, err, rate.ErrRateFieldMissed)
 }
 
-func TestGetRateIntegration(t *testing.T) {
+func TestGetCoinbaseRateIntegration(t *testing.T) {
 	config.LoadConfig()
-	rateServ := service.NewRateService()
+	rateServ := rate.GetRateService(coinbase)
 
 	rate, err := rateServ.GetRate()
 
@@ -65,9 +64,9 @@ func TestGetRateIntegration(t *testing.T) {
 	assert.NotEmpty(t, rate.Price)
 }
 
-func TestGetRateFailedIntegration(t *testing.T) {
-	config.Cfg.BtcURL = "https://dummy"
-	rateServ := service.NewRateService()
+func TestGetCoinbaseRateFailedIntegration(t *testing.T) {
+	config.Cfg.CoinbaseURL = "https://dummy"
+	rateServ := rate.GetRateService(coinbase)
 
 	_, err := rateServ.GetRate()
 

@@ -32,7 +32,7 @@ func (s *EmailRepositoryMock) GetAllEmails() []string {
 	args := s.Called()
 	arr, ok := args.Get(0).([]string)
 
-	if ok == false {
+	if !ok {
 		log.Panic("Assertion failed")
 	}
 	return arr

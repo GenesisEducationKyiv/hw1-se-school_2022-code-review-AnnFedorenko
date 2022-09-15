@@ -4,6 +4,7 @@ import (
 	"rate-api/config"
 	"rate-api/repository"
 	"rate-api/service"
+	"rate-api/service/rate"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,7 +18,7 @@ type EmailSendRepositoryMock struct {
 func TestSendEmailsSuccessIntegration(t *testing.T) {
 	config.LoadConfig()
 	emailServ := service.NewEmailService(repository.NewEmailRepository(config.Cfg.EmailStorage))
-	rateServ := service.NewRateService()
+	rateServ := rate.GetRateService("binance")
 	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 	initTestFile()
 
@@ -30,7 +31,7 @@ func TestSendEmailsSuccessIntegration(t *testing.T) {
 func TestSendEmailsFailIntegration(t *testing.T) {
 	config.LoadConfig()
 	emailServ := service.NewEmailService(repository.NewEmailRepository(config.Cfg.EmailStorage))
-	rateServ := service.NewRateService()
+	rateServ := rate.GetRateService("binance")
 	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 	config.Cfg.SMTPHost = "dummy"
 	initTestFile()

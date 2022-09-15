@@ -6,6 +6,7 @@ import (
 
 type RateServiceInterface interface {
 	GetRate() (model.Rate, error)
+	SetNext(next *RateServiceInterface)
 }
 
 type EmailServiceInterface interface {
