@@ -17,11 +17,9 @@ import (
 func Run() {
 	serverAddr := fmt.Sprintf("%s:%s", config.Cfg.ServerHost, config.Cfg.ServerPort)
 
-	rate1Serv := rate.GetRateService("binance")
+	rate1Serv := rate.GetRateService(config.Cfg.CryploCurrencyProvider)
 	rate2Serv := rate.GetRateService("coinbase")
-	rate3Serv := rate.GetRateService("coingate")
 	rate1Serv.SetNext(&rate2Serv)
-	rate2Serv.SetNext(&rate3Serv)
 
 	rateLogServ := logger.NewLogRateService(rate1Serv)
 	rateCacheServ := cache.NewCacheRateService(rateLogServ)
