@@ -10,11 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var binance = "binance"
-
 func TestGetRate(t *testing.T) {
 	config.LoadConfig()
-	rateServ := rate.GetRateService(binance)
+	rateServ := rate.NewBinanceRateService()
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -36,7 +34,7 @@ func TestGetRate(t *testing.T) {
 
 func TestGetRateMissing(t *testing.T) {
 	config.LoadConfig()
-	rateServ := rate.GetRateService(binance)
+	rateServ := rate.NewBinanceRateService()
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -57,7 +55,7 @@ func TestGetRateMissing(t *testing.T) {
 
 func TestGetRateIntegration(t *testing.T) {
 	config.LoadConfig()
-	rateServ := rate.GetRateService(binance)
+	rateServ := rate.NewBinanceRateService()
 
 	rate, err := rateServ.GetRate()
 
@@ -67,7 +65,7 @@ func TestGetRateIntegration(t *testing.T) {
 
 func TestGetRateFailedIntegration(t *testing.T) {
 	config.Cfg.BinanceURL = dummyURL
-	rateServ := rate.GetRateService(binance)
+	rateServ := rate.NewBinanceRateService()
 
 	_, err := rateServ.GetRate()
 

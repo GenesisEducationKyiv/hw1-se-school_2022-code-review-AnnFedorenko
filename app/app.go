@@ -14,23 +14,43 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var RateCreators = map[string]rate.RateFactory{
+	"binance":  &rate.BinanceRateCreator{},
+	"coinbase": &rate.CoinbaseRateCreator{},
+	"coingate": &rate.CoingateRateCreator{},
+}
+
 func Run() {
 	serverAddr := fmt.Sprintf("%s:%s", config.Cfg.ServerHost, config.Cfg.ServerPort)
 
-	rate1Serv := rate.GetRateService(config.Cfg.CryploCurrencyProvider)
-	rate2Serv := rate.GetRateService("coinbase")
-	rate1Serv.SetNext(&rate2Serv)
-
-	rateLogServ := logger.NewLogRateService(rate1Serv)
-	rateCacheServ := cache.NewCacheRateService(rateLogServ)
+	rateServ := InitRateProvider()
 
 	emailRepo := repository.NewEmailRepository(config.Cfg.EmailStorage)
 	emailServ := service.NewEmailService(emailRepo)
 
-	emailSendServ := service.NewEmailSendService(emailServ, rateCacheServ)
+	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 
-	handler := router.InitHandler(rateCacheServ, emailServ, emailSendServ)
+	handler := router.InitHandler(rateServ, emailServ, emailSendServ)
 	router := gin.Default()
 	handler.RegisterRouter(router)
 	log.Fatal(router.Run(serverAddr))
+}
+
+func InitRateProvider() router.RateServiceInterface {
+	defaultProviderName := config.Cfg.CryploCurrencyProvider
+	defaultRateServ := RateCreators[defaultProviderName].GetRateService()
+
+	prev := defaultRateServ
+	for k, v := range RateCreators {
+		if k != defaultProviderName {
+			provider := v.GetRateService()
+			prev.SetNext(&provider)
+			prev = provider
+		}
+	}
+
+	rateLogServ := logger.NewLogRateService(defaultRateServ)
+	rateCacheServ := cache.NewCacheRateService(rateLogServ)
+
+	return rateCacheServ
 }

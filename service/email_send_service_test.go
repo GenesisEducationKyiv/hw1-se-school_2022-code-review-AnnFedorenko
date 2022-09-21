@@ -18,7 +18,7 @@ type EmailSendRepositoryMock struct {
 func TestSendEmailsSuccessIntegration(t *testing.T) {
 	config.LoadConfig()
 	emailServ := service.NewEmailService(repository.NewEmailRepository(config.Cfg.EmailStorage))
-	rateServ := rate.GetRateService("binance")
+	rateServ := rate.NewBinanceRateService()
 	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 	initTestFile()
 
@@ -31,7 +31,7 @@ func TestSendEmailsSuccessIntegration(t *testing.T) {
 func TestSendEmailsFailIntegration(t *testing.T) {
 	config.LoadConfig()
 	emailServ := service.NewEmailService(repository.NewEmailRepository(config.Cfg.EmailStorage))
-	rateServ := rate.GetRateService("binance")
+	rateServ := rate.NewBinanceRateService()
 	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
 	config.Cfg.SMTPHost = "dummy"
 	initTestFile()

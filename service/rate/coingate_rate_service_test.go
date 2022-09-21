@@ -10,13 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var coingate = "coingate"
 var dummyURL = "https://dummy"
 var expectedRate = "772665.00000000"
 
 func TestGetCoingateRate(t *testing.T) {
 	config.LoadConfig()
-	rateServ := rate.GetRateService(coingate)
+	rateServ := rate.NewCoingateRateService()
 
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -34,7 +33,7 @@ func TestGetCoingateRate(t *testing.T) {
 
 func TestGetCoingateRateMissing(t *testing.T) {
 	config.LoadConfig()
-	rateServ := rate.GetRateService(coingate)
+	rateServ := rate.NewCoingateRateService()
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -52,7 +51,7 @@ func TestGetCoingateRateMissing(t *testing.T) {
 
 func TestGetCoingateRateIntegration(t *testing.T) {
 	config.LoadConfig()
-	rateServ := rate.GetRateService(coingate)
+	rateServ := rate.NewCoingateRateService()
 
 	rate, err := rateServ.GetRate()
 
@@ -62,7 +61,7 @@ func TestGetCoingateRateIntegration(t *testing.T) {
 
 func TestGetCoingateRateFailedIntegration(t *testing.T) {
 	config.Cfg.CoingateURL = dummyURL
-	rateServ := rate.GetRateService(coingate)
+	rateServ := rate.NewCoingateRateService()
 
 	_, err := rateServ.GetRate()
 
