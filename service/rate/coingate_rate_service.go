@@ -12,15 +12,17 @@ import (
 var ErrRateFieldMissed = errors.New("rate field is missing")
 
 type CoingateRateService struct {
-	next *router.RateServiceInterface
+	next   *router.RateServiceInterface
+	source string
 }
 
 func NewCoingateRateService() router.RateServiceInterface {
-	return &CoingateRateService{}
+	return &CoingateRateService{source: "coingate"}
 }
 
 func (s *CoingateRateService) GetRate() (model.Rate, error) {
 	rate, err := s.getRate()
+	rate.Source = s.source
 	if err != nil {
 		if s.next == nil {
 			return rate, err

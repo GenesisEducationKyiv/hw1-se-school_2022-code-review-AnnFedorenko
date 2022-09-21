@@ -10,15 +10,17 @@ import (
 )
 
 type BinanceRateService struct {
-	next *router.RateServiceInterface
+	next   *router.RateServiceInterface
+	source string
 }
 
 func NewBinanceRateService() router.RateServiceInterface {
-	return &BinanceRateService{}
+	return &BinanceRateService{source: "binance"}
 }
 
 func (s *BinanceRateService) GetRate() (model.Rate, error) {
 	rate, err := s.getRate()
+	rate.Source = s.source
 	if err != nil {
 		if s.next == nil {
 			return rate, err

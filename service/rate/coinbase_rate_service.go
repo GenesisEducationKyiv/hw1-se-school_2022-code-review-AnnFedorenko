@@ -11,16 +11,17 @@ import (
 )
 
 type CoinbaseRateService struct {
-	next *router.RateServiceInterface
+	next   *router.RateServiceInterface
+	source string
 }
 
 func NewCoinbaseRateService() router.RateServiceInterface {
-	return &CoinbaseRateService{}
+	return &CoinbaseRateService{source: "coinbase"}
 }
 
 func (s *CoinbaseRateService) GetRate() (model.Rate, error) {
 	rate, err := s.getRate()
-
+	rate.Source = s.source
 	if err != nil {
 		if s.next == nil {
 			return rate, err

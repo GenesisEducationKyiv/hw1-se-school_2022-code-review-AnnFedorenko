@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"rate-api/model"
 	"rate-api/router"
-	"reflect"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -20,9 +19,10 @@ func NewLogRateService(serv router.RateServiceInterface) router.RateServiceInter
 
 func (s *LogRateService) GetRate() (model.Rate, error) {
 	serv := *s.serv
-
 	newRate, err := serv.GetRate()
-	log.Info(fmt.Sprintf("%s - Response: %s", reflect.TypeOf(serv), newRate))
+	if err == nil {
+		log.Info(fmt.Sprintf("%s - Response: %s", newRate.Source, newRate.Price))
+	}
 
 	return newRate, err
 }
