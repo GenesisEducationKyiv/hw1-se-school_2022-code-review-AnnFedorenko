@@ -13,7 +13,7 @@ import (
 
 const ProjectName = "hw1-se-school_2022-code-review-AnnFedorenko"
 
-type config struct {
+type Config struct {
 	SMTPHost               string `env:"SMTP_HOST"        envDefault:"smtp.gmail.com1"`
 	SMTPPort               int    `env:"SMTP_PORT"        envDefault:"587"`
 	SMTPUsername           string `env:"EMAIL_ADDRESS"`
@@ -28,7 +28,7 @@ type config struct {
 	LogDuration            int    `env:"LOG_DURATION_MIN"`
 }
 
-var Cfg config
+var Cfg Config
 
 func LoadConfig() {
 	if flag.Lookup("test.v") == nil {
@@ -44,7 +44,7 @@ func LoadConfig() {
 		}
 	}
 
-	Cfg = config{}
+	Cfg = Config{}
 
 	err := env.Parse(&Cfg)
 	if err != nil {

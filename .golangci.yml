@@ -33,3 +33,9 @@ linters:
     - wastedassign
     - wrapcheck
     - wsl
+issues:
+  exclude-rules:
+    - path: '(.+)_test\.go'
+      linters:
+        - goerr113
+        - varnamelen

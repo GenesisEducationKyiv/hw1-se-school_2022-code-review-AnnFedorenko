@@ -6,6 +6,7 @@ import (
 	"rate-api/cache"
 	"rate-api/config"
 	"rate-api/logger"
+	"rate-api/mailclient"
 	"rate-api/repository"
 	"rate-api/router"
 	"rate-api/service"
@@ -28,7 +29,7 @@ func Run() {
 	emailRepo := repository.NewEmailRepository(config.Cfg.EmailStorage)
 	emailServ := service.NewEmailService(emailRepo)
 
-	emailSendServ := service.NewEmailSendService(emailServ, rateServ)
+	emailSendServ := service.NewEmailSendService(emailServ, rateServ, mailclient.NewSMTPClient(config.Cfg))
 
 	handler := router.InitHandler(rateServ, emailServ, emailSendServ)
 	router := gin.Default()
