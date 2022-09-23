@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/smtp"
 	"rate-api/config"
+	"rate-api/service"
 )
 
 type SMTPClient struct {
@@ -13,11 +14,7 @@ type SMTPClient struct {
 	port     int
 }
 
-type EmailClient interface {
-	Send(from string, to []string, msg []byte) error
-}
-
-func NewSMTPClient(cfg config.Config) EmailClient {
+func NewSMTPClient(cfg config.Config) service.EmailClient {
 	return &SMTPClient{
 		user:     cfg.SMTPUsername,
 		password: cfg.SMTPPassword,

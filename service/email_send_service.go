@@ -1,23 +1,25 @@
 package service
 
 import (
-	"rate-api/mailclient"
 	"rate-api/router"
 )
+
+type EmailClient interface {
+	Send(from string, to []string, msg []byte) error
+}
 
 type EmailSendService struct {
 	es     router.EmailServiceInterface
 	rs     router.RateServiceInterface
-	client mailclient.EmailClient
+	client EmailClient
 }
 
 func NewEmailSendService(es router.EmailServiceInterface,
-	rs router.RateServiceInterface, client mailclient.EmailClient) router.EmailSendServiceInterface {
+	rs router.RateServiceInterface, client EmailClient) router.EmailSendServiceInterface {
 	return &EmailSendService{es, rs, client}
 }
 
 func (s *EmailSendService) SendEmails() error {
-	//	var cfg = config.Cfg
 	sender := "BTC rate app"
 
 	receiver := s.es.GetAllEmails()
