@@ -4,10 +4,10 @@ import (
 	"errors"
 	"log"
 	"rate-api/config"
+	"rate-api/handler"
 	"rate-api/mailclient"
 	"rate-api/model"
 	"rate-api/repository"
-	"rate-api/router"
 	"rate-api/service"
 	"rate-api/service/rate"
 	"testing"
@@ -68,7 +68,7 @@ func (s *RateServiceMock) GetRate() (model.Rate, error) {
 	return rate, args.Error(1)
 }
 
-func (s *RateServiceMock) SetNext(next *router.RateServiceInterface) {
+func (s *RateServiceMock) SetNext(next *handler.RateServiceInterface) {
 	s.Called(next)
 }
 

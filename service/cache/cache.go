@@ -2,8 +2,8 @@ package cache
 
 import (
 	"rate-api/config"
+	"rate-api/handler"
 	"rate-api/model"
-	"rate-api/router"
 	"time"
 
 	"github.com/patrickmn/go-cache"
@@ -13,10 +13,10 @@ var rateKey = "rate"
 
 type CacheRateService struct {
 	c    cache.Cache
-	serv *router.RateServiceInterface
+	serv *handler.RateServiceInterface
 }
 
-func NewCacheRateService(serv router.RateServiceInterface) router.RateServiceInterface {
+func NewCacheRateService(serv handler.RateServiceInterface) handler.RateServiceInterface {
 	duration := time.Duration(config.Cfg.LogDuration) * time.Minute
 	c := cache.New(duration, duration+duration)
 	return &CacheRateService{c: *c,
@@ -43,7 +43,7 @@ func (s *CacheRateService) GetRate() (model.Rate, error) {
 	return newRate, nil
 }
 
-func (s *CacheRateService) SetNext(next *router.RateServiceInterface) {
+func (s *CacheRateService) SetNext(next *handler.RateServiceInterface) {
 	s.serv = next
 }
 

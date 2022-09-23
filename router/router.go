@@ -1,11 +1,13 @@
 package router
 
 import (
+	"rate-api/handler"
+
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) RegisterRouter(router *gin.Engine) {
-	router.GET("/rate", h.rateHandler.getRate)
-	router.POST("/subscribe", h.emailHandler.subscribe)
-	router.POST("/sendEmails", h.emailSendHandler.sendEmails)
+func RegisterRouter(router *gin.Engine, h *handler.Handler) {
+	router.GET("/rate", h.RateHandler.GetRate)
+	router.POST("/subscribe", h.EmailHandler.Subscribe)
+	router.POST("/sendEmails", h.EmailSendHandler.SendEmails)
 }

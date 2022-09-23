@@ -1,21 +1,19 @@
 package service
 
-import (
-	"rate-api/router"
-)
+import "rate-api/handler"
 
 type EmailClient interface {
 	Send(from string, to []string, msg []byte) error
 }
 
 type EmailSendService struct {
-	es     router.EmailServiceInterface
-	rs     router.RateServiceInterface
+	es     handler.EmailServiceInterface
+	rs     handler.RateServiceInterface
 	client EmailClient
 }
 
-func NewEmailSendService(es router.EmailServiceInterface,
-	rs router.RateServiceInterface, client EmailClient) router.EmailSendServiceInterface {
+func NewEmailSendService(es handler.EmailServiceInterface,
+	rs handler.RateServiceInterface, client EmailClient) handler.EmailSendServiceInterface {
 	return &EmailSendService{es, rs, client}
 }
 

@@ -5,16 +5,16 @@ import (
 	"io"
 	"net/http"
 	"rate-api/config"
+	"rate-api/handler"
 	"rate-api/model"
-	"rate-api/router"
 )
 
 type BinanceRateService struct {
-	next   *router.RateServiceInterface
+	next   *handler.RateServiceInterface
 	source string
 }
 
-func NewBinanceRateService() router.RateServiceInterface {
+func NewBinanceRateService() handler.RateServiceInterface {
 	return &BinanceRateService{source: "binance"}
 }
 
@@ -54,6 +54,6 @@ func (s *BinanceRateService) getRate() (model.Rate, error) {
 	return newRate, nil
 }
 
-func (s *BinanceRateService) SetNext(next *router.RateServiceInterface) {
+func (s *BinanceRateService) SetNext(next *handler.RateServiceInterface) {
 	s.next = next
 }

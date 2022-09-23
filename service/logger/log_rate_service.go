@@ -2,17 +2,17 @@ package logger
 
 import (
 	"fmt"
+	"rate-api/handler"
 	"rate-api/model"
-	"rate-api/router"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type LogRateService struct {
-	serv *router.RateServiceInterface
+	serv *handler.RateServiceInterface
 }
 
-func NewLogRateService(serv router.RateServiceInterface) router.RateServiceInterface {
+func NewLogRateService(serv handler.RateServiceInterface) handler.RateServiceInterface {
 	return &LogRateService{
 		serv: &serv}
 }
@@ -27,6 +27,6 @@ func (s *LogRateService) GetRate() (model.Rate, error) {
 	return newRate, err
 }
 
-func (s *LogRateService) SetNext(next *router.RateServiceInterface) {
+func (s *LogRateService) SetNext(next *handler.RateServiceInterface) {
 	s.serv = next
 }

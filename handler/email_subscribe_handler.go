@@ -1,4 +1,4 @@
-package router
+package handler
 
 import (
 	"errors"
@@ -17,7 +17,7 @@ func NewEmailHandler(emailServ EmailServiceInterface) EmailHandler {
 	return EmailHandler{emailServ}
 }
 
-func (h *EmailHandler) subscribe(context *gin.Context) {
+func (h *EmailHandler) Subscribe(context *gin.Context) {
 	var newEmail model.Email
 
 	if err := context.Bind(&newEmail); err != nil {
