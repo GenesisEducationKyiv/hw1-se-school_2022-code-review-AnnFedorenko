@@ -1,67 +1,34 @@
 package router
 
 import (
-	"errors"
-	"net/http"
 	"rate-api/model"
-	"rate-api/service"
-
-	"github.com/gin-gonic/gin"
 )
 
+type RateServiceInterface interface {
+	GetRate() (model.Rate, error)
+	SetNext(next *RateServiceInterface)
+}
+
+type EmailServiceInterface interface {
+	AddEmail(email model.Email) error
+	GetAllEmails() []string
+}
+
+type EmailSendServiceInterface interface {
+	SendEmails() error
+}
+
 type Handler struct {
-	rateServ      *service.RateService
-	emailServ     *service.EmailService
-	emailSendServ *service.EmailSendService
+	rateHandler      RateHandler
+	emailHandler     EmailHandler
+	emailSendHandler EmailSendHandler
 }
 
-func NewHandler(rateServ *service.RateService, emailServ *service.EmailService,
-	emailSendServ *service.EmailSendService) *Handler {
+func InitHandler(rateServ RateServiceInterface, emailServ EmailServiceInterface,
+	emailSendServ EmailSendServiceInterface) *Handler {
 	return &Handler{
-		rateServ:      rateServ,
-		emailServ:     emailServ,
-		emailSendServ: emailSendServ,
+		rateHandler:      NewRateHandler(rateServ),
+		emailHandler:     NewEmailHandler(emailServ),
+		emailSendHandler: NewEmailSendHandler(emailSendServ),
 	}
-}
-
-func (h *Handler) getRate(context *gin.Context) {
-	rate, err := h.rateServ.GetRate()
-	if err != nil {
-		http.Error(context.Writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	context.IndentedJSON(http.StatusOK, rate.Price)
-}
-
-func (h *Handler) subscribe(context *gin.Context) {
-	var newEmail model.Email
-
-	if err := context.Bind(&newEmail); err != nil {
-		http.Error(context.Writer, err.Error(), http.StatusConflict)
-		return
-	}
-
-	if err := h.emailServ.AddEmail(newEmail); err != nil {
-		if errors.Is(err, service.ErrEmailSubscribed) {
-			http.Error(context.Writer, err.Error(), http.StatusConflict)
-			return
-		}
-		if errors.Is(err, service.ErrEmailNotValid) {
-			http.Error(context.Writer, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		http.Error(context.Writer, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	context.Status(http.StatusCreated)
-}
-
-func (h *Handler) sendEmails(context *gin.Context) {
-	if err := h.emailSendServ.SendEmails(); err != nil {
-		http.Error(context.Writer, "Failed to send emails", http.StatusInternalServerError)
-		return
-	}
-	context.Status(http.StatusOK)
 }

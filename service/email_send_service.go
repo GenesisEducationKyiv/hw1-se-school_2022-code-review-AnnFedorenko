@@ -1,38 +1,48 @@
 package service
 
 import (
-	"fmt"
-	"net/smtp"
-	"rate-api/config"
-	"rate-api/repository"
+	"rate-api/router"
 )
 
-type EmailSendService struct {
-	repo repository.EmailRepository
-	rs   RateService
+type EmailClient interface {
+	Send(from string, to []string, msg []byte) error
 }
 
-func NewEmailSendService(repo repository.EmailRepository, rs RateService) *EmailSendService {
-	return &EmailSendService{repo: repo,
-		rs: rs}
+type EmailSendService struct {
+	es     router.EmailServiceInterface
+	rs     router.RateServiceInterface
+	client EmailClient
+}
+
+func NewEmailSendService(es router.EmailServiceInterface,
+	rs router.RateServiceInterface, client EmailClient) router.EmailSendServiceInterface {
+	return &EmailSendService{es, rs, client}
 }
 
 func (s *EmailSendService) SendEmails() error {
-	var cfg = config.Cfg
-	user := cfg.SMTPUsername
-	password := cfg.SMTPPassword
-	addr := fmt.Sprintf("%s:%d", cfg.SMTPHost, cfg.SMTPPort)
-	host := cfg.SMTPHost
 	sender := "BTC rate app"
 
-	receiver := s.repo.GetAllEmails()
+	receiver := s.es.GetAllEmails()
 	if receiver == nil {
 		return nil
 	}
 
-	rate, err := s.rs.GetRate()
+	msg, err := s.createEmailMessage()
 	if err != nil {
 		return err
+	}
+
+	err = s.client.Send(sender, receiver, msg)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *EmailSendService) createEmailMessage() ([]byte, error) {
+	rate, err := s.rs.GetRate()
+	if err != nil {
+		return nil, err
 	}
 
 	msg := []byte("From: Bitcoin rate helper\r\n" +
@@ -40,11 +50,5 @@ func (s *EmailSendService) SendEmails() error {
 		rate.Price +
 		"\r\n")
 
-	auth := smtp.PlainAuth("", user, password, host)
-
-	if err = smtp.SendMail(addr, auth, sender, receiver, msg); err != nil {
-		return err
-	}
-
-	return nil
+	return msg, nil
 }

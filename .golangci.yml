@@ -18,11 +18,13 @@ linters:
     - golint
     - ifshort
     - interfacer
+    - ireturn
     - maligned
     - nlreturn
     - noctx
     - nosnakecase
     - paralleltest 
+    - revive
     - rowserrcheck
     - scopelint
     - sqlclosecheck
@@ -31,3 +33,9 @@ linters:
     - wastedassign
     - wrapcheck
     - wsl
+issues:
+  exclude-rules:
+    - path: '(.+)_test\.go'
+      linters:
+        - goerr113
+        - varnamelen

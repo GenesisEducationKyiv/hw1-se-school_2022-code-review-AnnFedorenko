@@ -1,5 +1,6 @@
 package model
 
 type Rate struct {
-	Price string
+	Price  string
+	Source string
 }
