@@ -3,13 +3,14 @@ package app
 import (
 	"fmt"
 	"log"
-	"rate-api/cache"
 	"rate-api/config"
-	"rate-api/logger"
+	"rate-api/handler"
 	"rate-api/mailclient"
 	"rate-api/repository"
-	"rate-api/router"
+	route "rate-api/router"
 	"rate-api/service"
+	"rate-api/service/cache"
+	"rate-api/service/logger"
 	"rate-api/service/rate"
 
 	"github.com/gin-gonic/gin"
@@ -31,13 +32,13 @@ func Run() {
 
 	emailSendServ := service.NewEmailSendService(emailServ, rateServ, mailclient.NewSMTPClient(config.Cfg))
 
-	handler := router.InitHandler(rateServ, emailServ, emailSendServ)
+	handler := handler.InitHandler(rateServ, emailServ, emailSendServ)
 	router := gin.Default()
-	handler.RegisterRouter(router)
+	route.RegisterRouter(router, handler)
 	log.Fatal(router.Run(serverAddr))
 }
 
-func InitRateProvider() router.RateServiceInterface {
+func InitRateProvider() handler.RateServiceInterface {
 	defaultProviderName := config.Cfg.CryploCurrencyProvider
 	defaultRateServ := RateCreators[defaultProviderName].GetRateService()
 

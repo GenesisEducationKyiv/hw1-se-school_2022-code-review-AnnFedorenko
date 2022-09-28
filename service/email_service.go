@@ -2,9 +2,9 @@ package service
 
 import (
 	"net/mail"
+	"rate-api/handler"
 	"rate-api/mailerror"
 	"rate-api/model"
-	"rate-api/router"
 )
 
 type EmailService struct {
@@ -17,7 +17,7 @@ type EmailRepositoryInterface interface {
 	GetAllEmails() []string
 }
 
-func NewEmailService(repo EmailRepositoryInterface) router.EmailServiceInterface {
+func NewEmailService(repo EmailRepositoryInterface) handler.EmailServiceInterface {
 	return &EmailService{repo: repo}
 }
 

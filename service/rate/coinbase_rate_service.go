@@ -4,18 +4,18 @@ import (
 	"io"
 	"net/http"
 	"rate-api/config"
+	"rate-api/handler"
 	"rate-api/model"
-	"rate-api/router"
 
 	"github.com/tidwall/gjson"
 )
 
 type CoinbaseRateService struct {
-	next   *router.RateServiceInterface
+	next   *handler.RateServiceInterface
 	source string
 }
 
-func NewCoinbaseRateService() router.RateServiceInterface {
+func NewCoinbaseRateService() handler.RateServiceInterface {
 	return &CoinbaseRateService{source: "coinbase"}
 }
 
@@ -53,6 +53,6 @@ func (s *CoinbaseRateService) getRate() (model.Rate, error) {
 	return newRate, nil
 }
 
-func (s *CoinbaseRateService) SetNext(next *router.RateServiceInterface) {
+func (s *CoinbaseRateService) SetNext(next *handler.RateServiceInterface) {
 	s.next = next
 }

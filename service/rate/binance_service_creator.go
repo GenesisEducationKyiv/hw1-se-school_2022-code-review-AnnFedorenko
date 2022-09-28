@@ -1,6 +1,6 @@
 package rate
 
-import "rate-api/router"
+import "rate-api/handler"
 
 type BinanceRateCreator struct {
 }
@@ -9,6 +9,6 @@ func NewBinanceRateCreator() RateFactory {
 	return BinanceRateCreator{}
 }
 
-func (c BinanceRateCreator) GetRateService() router.RateServiceInterface {
+func (c BinanceRateCreator) GetRateService() handler.RateServiceInterface {
 	return NewBinanceRateService()
 }

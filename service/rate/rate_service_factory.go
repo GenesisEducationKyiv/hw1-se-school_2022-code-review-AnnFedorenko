@@ -1,9 +1,7 @@
 package rate
 
-import (
-	"rate-api/router"
-)
+import "rate-api/handler"
 
 type RateFactory interface {
-	GetRateService() router.RateServiceInterface
+	GetRateService() handler.RateServiceInterface
 }

@@ -5,18 +5,18 @@ import (
 	"io"
 	"net/http"
 	"rate-api/config"
+	"rate-api/handler"
 	"rate-api/model"
-	"rate-api/router"
 )
 
 var ErrRateFieldMissed = errors.New("rate field is missing")
 
 type CoingateRateService struct {
-	next   *router.RateServiceInterface
+	next   *handler.RateServiceInterface
 	source string
 }
 
-func NewCoingateRateService() router.RateServiceInterface {
+func NewCoingateRateService() handler.RateServiceInterface {
 	return &CoingateRateService{source: "coingate"}
 }
 
@@ -53,6 +53,6 @@ func (s *CoingateRateService) getRate() (model.Rate, error) {
 	return newRate, nil
 }
 
-func (s *CoingateRateService) SetNext(next *router.RateServiceInterface) {
+func (s *CoingateRateService) SetNext(next *handler.RateServiceInterface) {
 	s.next = next
 }
