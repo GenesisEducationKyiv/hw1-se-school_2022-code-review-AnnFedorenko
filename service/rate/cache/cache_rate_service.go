@@ -11,19 +11,19 @@ import (
 
 var rateKey = "rate"
 
-type CacheRateService struct {
+type CacheRateServiceProxy struct {
 	c    cache.Cache
 	serv *handler.RateServiceInterface
 }
 
-func NewCacheRateService(serv handler.RateServiceInterface) handler.RateServiceInterface {
+func NewCacheRateServiceProxy(serv handler.RateServiceInterface) handler.RateServiceInterface {
 	duration := time.Duration(config.Cfg.LogDuration) * time.Minute
 	c := cache.New(duration, duration+duration)
-	return &CacheRateService{c: *c,
+	return &CacheRateServiceProxy{c: *c,
 		serv: &serv}
 }
 
-func (s *CacheRateService) GetRate() (model.Rate, error) {
+func (s *CacheRateServiceProxy) GetRate() (model.Rate, error) {
 	cacheRate := s.getRate()
 	if cacheRate.Price != "" {
 		return cacheRate, nil
@@ -43,11 +43,11 @@ func (s *CacheRateService) GetRate() (model.Rate, error) {
 	return newRate, nil
 }
 
-func (s *CacheRateService) SetNext(next *handler.RateServiceInterface) {
+func (s *CacheRateServiceProxy) SetNext(next *handler.RateServiceInterface) {
 	s.serv = next
 }
 
-func (s *CacheRateService) getRate() model.Rate {
+func (s *CacheRateServiceProxy) getRate() model.Rate {
 	var rate model.Rate
 	cache, ok := s.c.Get(rateKey)
 	if !ok {
@@ -62,6 +62,6 @@ func (s *CacheRateService) getRate() model.Rate {
 	return rate
 }
 
-func (s *CacheRateService) setRate(rate model.Rate) {
+func (s *CacheRateServiceProxy) setRate(rate model.Rate) {
 	s.c.Set(rateKey, rate, cache.DefaultExpiration)
 }

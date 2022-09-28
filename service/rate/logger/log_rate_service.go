@@ -8,16 +8,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type LogRateService struct {
+type LogRateServiceDecorator struct {
 	serv *handler.RateServiceInterface
 }
 
-func NewLogRateService(serv handler.RateServiceInterface) handler.RateServiceInterface {
-	return &LogRateService{
+func NewLogRateServiceDecorator(serv handler.RateServiceInterface) handler.RateServiceInterface {
+	return &LogRateServiceDecorator{
 		serv: &serv}
 }
 
-func (s *LogRateService) GetRate() (model.Rate, error) {
+func (s *LogRateServiceDecorator) GetRate() (model.Rate, error) {
 	serv := *s.serv
 	newRate, err := serv.GetRate()
 	if err == nil {
@@ -27,6 +27,6 @@ func (s *LogRateService) GetRate() (model.Rate, error) {
 	return newRate, err
 }
 
-func (s *LogRateService) SetNext(next *handler.RateServiceInterface) {
+func (s *LogRateServiceDecorator) SetNext(next *handler.RateServiceInterface) {
 	s.serv = next
 }

@@ -9,17 +9,17 @@ import (
 	"rate-api/repository"
 	route "rate-api/router"
 	"rate-api/service"
-	"rate-api/service/cache"
-	"rate-api/service/logger"
 	"rate-api/service/rate"
+	"rate-api/service/rate/cache"
+	"rate-api/service/rate/logger"
 
 	"github.com/gin-gonic/gin"
 )
 
 var RateCreators = map[string]rate.RateFactory{
-	"binance":  &rate.BinanceRateCreator{},
-	"coinbase": &rate.CoinbaseRateCreator{},
-	"coingate": &rate.CoingateRateCreator{},
+	"binance":  rate.NewBinanceRateCreator(),
+	"coinbase": rate.NewCoinbaseRateCreator(),
+	"coingate": rate.NewCoingateRateCreator(),
 }
 
 func Run() {
@@ -51,8 +51,8 @@ func InitRateProvider() handler.RateServiceInterface {
 		}
 	}
 
-	rateLogServ := logger.NewLogRateService(defaultRateServ)
-	rateCacheServ := cache.NewCacheRateService(rateLogServ)
+	rateLogServ := logger.NewLogRateServiceDecorator(defaultRateServ)
+	rateCacheServ := cache.NewCacheRateServiceProxy(rateLogServ)
 
 	return rateCacheServ
 }
