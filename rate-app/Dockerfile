@@ -15,7 +15,5 @@ COPY . .
 RUN go build -o ./app ./cmd/rate-api \
     && chmod +x ./app
 
-#EXPOSE 8080
-
 ENTRYPOINT [ "./app" ]
 

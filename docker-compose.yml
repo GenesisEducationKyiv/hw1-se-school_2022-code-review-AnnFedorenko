@@ -1,5 +1,30 @@
 version: "3.2"
 services:
+  rate-app:
+    build: ./rate-app
+    container_name: docker-btc-rate-api
+    image: docker-btc-rate-api
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - rabbitmq_go_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  log-consumer:
+    build: ./log-consumer
+    container_name: log-consumer
+    image: log-consumer
+    restart: always
+    tty: true
+    networks:
+      - rabbitmq_go_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'rabbitmq'
@@ -11,6 +36,12 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - rabbitmq_go_net
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 2s
 
 networks:
   rabbitmq_go_net:

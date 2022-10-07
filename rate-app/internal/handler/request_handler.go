@@ -6,7 +6,6 @@ type Handler struct {
 	RateHandler      RateHandler
 	EmailHandler     EmailHandler
 	EmailSendHandler EmailSendHandler
-	log              logger.LoggerInterface
 }
 
 func InitHandler(rateServ RateServiceInterface, emailServ EmailServiceInterface,

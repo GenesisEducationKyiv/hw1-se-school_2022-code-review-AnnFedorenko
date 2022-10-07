@@ -25,7 +25,7 @@ func (h *EmailHandler) Subscribe(context *gin.Context) {
 	var newEmail model.Email
 
 	if err := context.Bind(&newEmail); err != nil {
-		h.log.Error(fmt.Sprintf("Error occured during adding subscription: %s", err.Error()))
+		h.log.Error(fmt.Sprintf("Error occurred during adding subscription: %s", err.Error()))
 		http.Error(context.Writer, err.Error(), http.StatusConflict)
 		return
 	}
@@ -42,7 +42,7 @@ func (h *EmailHandler) Subscribe(context *gin.Context) {
 			return
 		}
 
-		h.log.Error(fmt.Sprintf("Error occured during adding subscription: %s", err.Error()))
+		h.log.Error(fmt.Sprintf("Error occurred during adding subscription: %s", err.Error()))
 		http.Error(context.Writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
