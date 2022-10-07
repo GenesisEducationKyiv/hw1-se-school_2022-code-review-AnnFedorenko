@@ -12,12 +12,10 @@ RUN go get rate-api
 
 COPY . .
 
-#RUN go build -o /docker-btc-rate-api
-
 RUN go build -o ./app ./cmd/rate-api \
     && chmod +x ./app
 
-EXPOSE 8080
+#EXPOSE 8080
 
 ENTRYPOINT [ "./app" ]
 
