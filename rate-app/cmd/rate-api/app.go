@@ -26,7 +26,11 @@ var RateCreators = map[string]rate.RateFactory{
 
 func Run() {
 	logCfg := InitLogConfig(config.Cfg)
-	rmqCl, _ := logmb.NewRMQClient(logCfg)
+	rmqCl, err := logmb.NewRMQClient(logCfg)
+	if err != nil {
+		panic(err)
+	}
+	defer rmqCl.CloseConnection()
 	rmqLogger := logmb.NewLogger(rmqCl)
 
 	serverAddr := fmt.Sprintf("%s:%s", config.Cfg.ServerHost, config.Cfg.ServerPort)

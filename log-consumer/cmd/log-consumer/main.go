@@ -18,23 +18,23 @@ func failOnError(err error, msg string) {
 func main() {
 	err := godotenv.Load(".env")
 	failOnError(err, "Failed to load env")
-	rmqClient, _ := rmq.NewRMQClient(rmq.RMQConfig{
+	rmqClient, err := rmq.NewRMQClient(rmq.RMQConfig{
 		Host:     os.Getenv("RMQ_HOST"),
 		Port:     os.Getenv("RMQ_PORT"),
 		User:     os.Getenv("RMQ_USER"),
 		Password: os.Getenv("RMQ_PASSWORD"),
 		Exchange: os.Getenv("LOG_EXCHANGE"),
 	})
+	failOnError(err, "Failed to declare rabbitMQ consumer")
+	defer rmqClient.CloseConnection()
 
 	logLevel := os.Getenv("LOG_LEVEL")
 
 	err = rmqClient.QueueDeclare(logLevel)
 	failOnError(err, "Failed to declare a queue")
-	defer rmqClient.CloseConnection()
 
 	msgs, err := rmqClient.Consume(logLevel)
 	failOnError(err, "Failed to register a consumer")
-	defer rmqClient.CloseConnection()
 
 	var forever chan struct{}
 

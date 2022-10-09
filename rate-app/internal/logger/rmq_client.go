@@ -82,6 +82,16 @@ func (c *RMQClient) Publish(queueName string, messageBody string) error {
 	return err
 }
 
+func (c *RMQClient) CloseConnection() error {
+	if err := c.connection.Close(); err != nil {
+		return err
+	}
+	if err := c.channel.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func queueBind(queueName string, client *RMQClient) error {
 	queue, err := client.channel.QueueDeclare(
 		queueName, // name
