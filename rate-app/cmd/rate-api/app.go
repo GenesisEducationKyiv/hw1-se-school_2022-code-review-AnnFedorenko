@@ -30,7 +30,11 @@ func Run() {
 	if err != nil {
 		panic(err)
 	}
-	defer rmqCl.CloseConnection()
+	defer func() {
+		if err := rmqCl.CloseConnection(); err != nil {
+			panic(err)
+		}
+	}()
 	rmqLogger := logmb.NewLogger(rmqCl)
 
 	serverAddr := fmt.Sprintf("%s:%s", config.Cfg.ServerHost, config.Cfg.ServerPort)
@@ -42,9 +46,9 @@ func Run() {
 
 	emailSendServ := service.NewEmailSendService(emailServ, rateServ, mailclient.NewSMTPClient(config.Cfg))
 
-	handler := handler.InitHandler(rateServ, emailServ, emailSendServ, rmqLogger)
+	reqHandler := handler.InitHandler(rateServ, emailServ, emailSendServ, rmqLogger)
 	router := gin.Default()
-	route.RegisterRouter(router, handler)
+	route.RegisterRouter(router, reqHandler)
 	log.Fatal(router.Run(serverAddr))
 }
 

@@ -26,7 +26,11 @@ func main() {
 		Exchange: os.Getenv("LOG_EXCHANGE"),
 	})
 	failOnError(err, "Failed to declare rabbitMQ consumer")
-	defer rmqClient.CloseConnection()
+	defer func() {
+		if err := rmqClient.CloseConnection(); err != nil {
+			panic(err)
+		}
+	}()
 
 	logLevel := os.Getenv("LOG_LEVEL")
 
