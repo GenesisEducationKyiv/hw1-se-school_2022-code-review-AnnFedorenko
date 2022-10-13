@@ -26,6 +26,11 @@ type Config struct {
 	EmailStorage           string `env:"EMAIL_STORAGE"`
 	CryploCurrencyProvider string `env:"CRYPTO_CURRENCY_PROVIDER"`
 	LogDuration            int    `env:"LOG_DURATION_MIN"`
+	RMQHost                string `env:"RMQ_HOST"             envDefault:"localhost"`
+	RMQPort                string `env:"RMQ_PORT"             envDefault:"5672"`
+	RMQUser                string `env:"RMQ_USER"         envDefault:"guest"`
+	RMQPassword            string `env:"RMQ_PASSWORD"         envDefault:"guest"`
+	LogExchange            string `env:"LOG_EXCHANGE"`
 }
 
 var Cfg Config
