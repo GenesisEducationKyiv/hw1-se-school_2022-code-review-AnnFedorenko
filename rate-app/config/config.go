@@ -31,6 +31,9 @@ type Config struct {
 	RMQUser                string `env:"RMQ_USER"         envDefault:"guest"`
 	RMQPassword            string `env:"RMQ_PASSWORD"         envDefault:"guest"`
 	LogExchange            string `env:"LOG_EXCHANGE"`
+	CustomersServerURL     string `env:"CUSTOMERS_SERVER_URL"`
+	EmailsServerURL        string `env:"EMAILS_SERVER_URL"`
+	DTMAddr                string `env:"DTM_ADDR"`
 }
 
 var Cfg Config

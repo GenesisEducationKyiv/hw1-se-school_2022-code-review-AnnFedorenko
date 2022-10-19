@@ -1,13 +1,19 @@
 package router
 
 import (
-	"rate-api/internal/handler"
+	handle "rate-api/internal/handler"
 
+	"github.com/dtm-labs/dtm/dtmutil"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRouter(router *gin.Engine, h *handler.Handler) {
-	router.GET("/rate", h.RateHandler.GetRate)
-	router.POST("/subscribe", h.EmailHandler.Subscribe)
-	router.POST("/sendEmails", h.EmailSendHandler.SendEmails)
+func RegisterRouter(router *gin.Engine, handler *handle.Handler) {
+	router.GET("/rate", handler.RateHandler.GetRate)
+	router.POST("/subscribe", handler.EmailHandler.EmailPlusCustomerSubscribe)
+	router.POST("/sendEmails", handler.EmailSendHandler.SendEmails)
+
+	router.POST("/register-subscriber",
+		dtmutil.WrapHandler2(handler.EmailHandler.Subscribe))
+	router.POST("/register-subscriber-compensate",
+		dtmutil.WrapHandler2(handler.EmailHandler.SubscribeEmailCompensate))
 }

@@ -6,6 +6,7 @@ import (
 	"os"
 	"rate-api/internal/model"
 	"rate-api/internal/service"
+	"strings"
 )
 
 type (
@@ -71,6 +72,26 @@ func (r *EmailRepository) GetAllEmails() []string {
 	}
 
 	return lines
+}
+
+func (r *EmailRepository) Delete(email model.Email) error {
+	lines := r.GetAllEmails()
+	addr := email.Address
+
+	var resultLines []string
+	for _, line := range lines {
+		if line != addr {
+			resultLines = append(resultLines, line)
+		}
+	}
+	output := strings.Join(resultLines, "\n")
+
+	err := os.WriteFile(r.filePath, []byte(output), fileMode)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func isFileExist(fileName string) (bool, error) {

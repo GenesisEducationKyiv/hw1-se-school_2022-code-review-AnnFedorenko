@@ -14,6 +14,7 @@ type EmailService struct {
 type EmailRepositoryInterface interface {
 	IsExist(email model.Email) (bool, error)
 	Add(email model.Email) error
+	Delete(email model.Email) error
 	GetAllEmails() []string
 }
 
@@ -40,6 +41,10 @@ func (s *EmailService) AddEmail(newEmail model.Email) error {
 
 func (s *EmailService) GetAllEmails() []string {
 	return s.repo.GetAllEmails()
+}
+
+func (s *EmailService) DeleteEmail(email model.Email) error {
+	return s.repo.Delete(email)
 }
 
 func isEmailValid(address string) bool {

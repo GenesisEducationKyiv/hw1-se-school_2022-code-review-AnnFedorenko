@@ -38,6 +38,11 @@ func (s *EmailServiceMock) AddEmail(email model.Email) error {
 	return args.Error(0)
 }
 
+func (s *EmailServiceMock) DeleteEmail(email model.Email) error {
+	args := s.Called(email)
+	return args.Error(0)
+}
+
 func (s *EmailServiceMock) GetAllEmails() []string {
 	args := s.Called()
 	arr, ok := args.Get(0).([]string)
