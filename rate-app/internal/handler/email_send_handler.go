@@ -3,18 +3,12 @@ package handler
 import (
 	"net/http"
 	"rate-api/internal/logger"
-	"rate-api/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
 
 type EmailSendServiceInterface interface {
 	SendEmails() error
-}
-
-type EmailServiceInterface interface {
-	AddEmail(email model.Email) error
-	GetAllEmails() []string
 }
 
 type EmailSendHandler struct {

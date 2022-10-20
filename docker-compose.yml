@@ -1,10 +1,11 @@
 version: "3.2"
 services:
-  rate-app:
+  btc:
     build: ./rate-app
-    container_name: docker-btc-rate-api
-    image: docker-btc-rate-api
+    container_name: btc
+    image: btc
     restart: always
+    tty: true
     ports:
       - "8000:8000"
     networks:
@@ -42,6 +43,69 @@ services:
       timeout: 3s
       retries: 5
       start_period: 2s
+
+  dtm:
+    image: yedf/dtm
+    container_name: dtm
+    restart: always
+    ports:
+      - "36790:36790"
+      - "36789:36789"
+    networks:
+      - rabbitmq_go_net
+
+  customers:
+    build:
+      context: ./customers
+      dockerfile: Dockerfile
+    environment:
+      - DTM_COORDINATOR=http://dtm:36789/api/dtmsvr
+      - ORDERS_SERVICE_URL=http://orders:8080
+      - CUSTOMERS_SERVICE_URL=http://customers:8080
+      - MYSQL_DSN=saga:saga@tcp(mysql:3306)/saga?charset=utf8mb4&parseTime=True&loc=Local
+    ports:
+      - "8090:8080"
+    networks:
+      - rabbitmq_go_net
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  orders:
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+    environment:
+      - DTM_COORDINATOR=http://dtm:36789/api/dtmsvr
+      - ORDERS_SERVICE_URL=http://orders:8080
+      - CUSTOMERS_SERVICE_URL=http://customers:8080
+      - MYSQL_DSN=saga:saga@tcp(mysql:3306)/saga?charset=utf8mb4&parseTime=True&loc=Local
+    ports:
+      - "8091:8080"
+    networks:
+      - rabbitmq_go_net
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8
+    restart: always
+    ports:
+      - "8092:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=saga
+      - MYSQL_USER=saga
+      - MYSQL_PASSWORD=saga
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u saga --password=saga
+      interval: 2s
+      timeout: 2s
+      retries: 5
+      start_period: 2s
+    networks:
+      - rabbitmq_go_net
 
 networks:
   rabbitmq_go_net:
